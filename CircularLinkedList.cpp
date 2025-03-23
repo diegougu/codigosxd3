@@ -40,7 +40,7 @@ template <class T, class C>
 bool CircularLinkedList<T, C>::find(T x, C comp, node<T>**& p) {
 	do {
 		p = &((*p)->next);
-	} while ((*p)->next != head && comp(x, (*p)->valor));
+	} while (*p != head && comp(x, (*p)->valor));
 
 	return (*p)->valor == x;
 }
@@ -108,7 +108,7 @@ void CircularLinkedList<T, C>::del(T x) {
 		head = head->next;
 		q->next = head;
 
-		if (head->next == head) {
+		if (x == head->valor && head->next == head) {
 			head = nullptr;
 		}
 		delete temp;
@@ -127,14 +127,15 @@ int main() {
 
 	for (int i = 0; i < 10; i++) {
 		l1.add(arr[i]);
-		l1.print();
 	}
 
+	l1.add(11);
+	l1.print();
 
 	for (int i = 0; i < 10; i++) {
+		cout << arr[i] << endl;
 		l1.del(arr[i]);
 		l1.print();
 	}
+
 }
-
-
