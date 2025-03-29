@@ -111,7 +111,7 @@ int main() {
 	CLess_Poli l2;
 	CGreaster_Poli g2;
 
-	vector<int> sizes = { 10, 50, 100, 500, 1000 };
+	vector<int> sizes = { 1000, 2000, 3000, 4000, 5000 };
 
 	for (int i = 0; i < sizes.size(); i++) {
 		int* ar = new int[sizes[i]];
