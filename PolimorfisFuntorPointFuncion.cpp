@@ -96,38 +96,8 @@ double bubbleSort(int* arr, int n) {
 }
 
 void refill(int* arr, int n) {
-	srand(time(nullptr));
-	for (int i = 0; i < n; i++) {
-		if (i == 0) {
-			arr[i] = 9;
-		}
-		else if (i == 1) {
-			arr[i] = 0;
-		}
-		else if (i % 2 == 0) {
-			arr[i] = 4;
-		}
-		else if (i % 3 == 0) {
-			arr[i] = 3;
-		}
-		else if (i % 4 == 0) {
-			arr[i] = 5;
-		}
-		else if (i % 5 == 0) {
-			arr[i] = 1;
-		}
-		else if (i % 6 == 0) {
-			arr[i] = 2;
-		}
-		else if (i % 7 == 0) {
-			arr[i] = 8;
-		}
-		else if (i % 8 == 0) {
-			arr[i] = 7;
-		}
-		else if (i % 9 == 0) {
-			arr[i] = 6;
-		}
+	for (int i = 0, j = n; i < n; i++, j--) {
+		arr[i] = j;
 	}
 }
 
