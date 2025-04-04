@@ -14,7 +14,7 @@ public:
 	void push_front(T x);
 	void pop_back();
 	void pop_front();
-	int& operator[](int pos);
+	T& operator[](int pos);
 	void print();
 };
 
@@ -81,7 +81,7 @@ void CVector<T>::pop_front() {
 }
 
 template <class T>
-int& CVector<T>::operator[](int pos) {
+T& CVector<T>::operator[](int pos) {
 	if (pos < 0 || pos > ite) {
 		static int dummy = -9999;
 		return dummy;
