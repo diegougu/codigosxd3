@@ -83,7 +83,7 @@ void CVector<T>::pop_front() {
 template <class T>
 T& CVector<T>::operator[](int pos) {
 	if (pos < 0 || pos > ite) {
-		static int dummy = -9999;
+		static T dummy;
 		return dummy;
 	}
 	return arr[pos];
