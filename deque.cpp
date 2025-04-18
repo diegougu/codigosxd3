@@ -1,188 +1,189 @@
 #include <iostream>
+using namespace  std;
 
-using namespace std;
-
-template <class T>
 class Deque {
 private:
-	int elements = 0;
-	int map_tam = 0;
-	int arr_tam = 0;
-	int arrays = 0;
-	T** map = nullptr;
-	T** ini_map = nullptr;
-	T** fin_map = nullptr;
-	T* ini_array = nullptr;
-	T* fin_array = nullptr;
-	void ExpandOrColapse(int newtammap);
+	int map_tam;
+	int arr_tam;
+	int** map = new int* [map_tam];
+	int** inicio_mapa = map + (map_tam / 2);
+	int** fin_mapa = map + (map_tam / 2);
+	int* inicio_arr = nullptr;
+	int* fin_arr = nullptr;
+	int elementos = 0;
+	int arr_count = 0;
+	void ExpandOrColapse(int newmap_tam);
 public:
-	Deque(int tm, int ta) : map_tam(tm), arr_tam(ta) {
-		map = new T * [map_tam];
-		ini_map = map + (map_tam / 2);
-		fin_map = ini_map;
-	}
-	void push_front(T x);
-	void push_back(T x);
-	void pop_front();
+	void push_back(int v);
+	void push_front(int v);
 	void pop_back();
-	T& operator[](int pos);
+	void pop_front();
+	int& operator[](int v);
 	void print();
+	Deque(int m_t, int a_t) : map_tam(m_t), arr_tam(a_t) {}
+
 };
 
-template <class T>
-T& Deque<T>::operator[](int pos) {
-	if (pos >= elements) {
-		static T random;
-		return random;
-	}
-
-	int espaciosvacios = ini_array - *ini_map;
-	int posmap = pos / arr_tam;
-	int posarray = (pos % arr_tam) + espaciosvacios;
-	T** m = ini_map + posmap;
-	T* a = *m + posarray;
-	return *a;
-
-}
-
-template <class T>
-void Deque<T>::ExpandOrColapse(int newtammap) {
-	T** newmapa = new T * [newtammap];
-	T** i = newmapa + arrays - 1;
-	T** j = ini_map;
-	ini_map = i;
-	while (j <= fin_map) {
-		*i = *j;
-		i++;
-		j++;
-	}
-	fin_map = i - 1;
-	map_tam = newtammap;
-	map = newmapa;
-}
-
-template <class T>
-void Deque<T>::push_back(T x) {
-	if (ini_array == nullptr && fin_array == nullptr) {
-		*fin_map = new T[arr_tam];
-		ini_array = *fin_map + (arr_tam / 2);
-		fin_array = *fin_map + (arr_tam / 2);
-		*fin_array = x;
-		elements++;
-		arrays++;
-	}
-	else if (fin_array == *fin_map + arr_tam - 1) {
-		if (fin_map == map + map_tam - 1) {
-			ExpandOrColapse(map_tam * 2);
+void Deque::ExpandOrColapse(int newmapa_tam) {
+	int** newmap = new int* [newmapa_tam];
+	int** ite = inicio_mapa;
+	int** ite_newmap = newmap + (newmapa_tam / 2) - 1;
+	while (ite <= fin_mapa) {
+		if (ite == inicio_mapa) {
+			inicio_mapa = ite_newmap;
 		}
-		fin_map++;
-		*fin_map = new T[arr_tam];
-		fin_array = *fin_map;
-		*fin_array = x;
-		elements++;
-		arrays++;
+		if (ite == fin_mapa) {
+			fin_mapa = ite_newmap;
+			*ite_newmap = *ite;
+			break;
+		}
+		*ite_newmap = *ite;
+		ite++;
+		ite_newmap++;
+	}
+	int** temp = map;
+	map_tam = newmapa_tam;
+	map = newmap;
+	delete[]temp;
+}
+
+void Deque::push_back(int v) {
+	if (inicio_arr == nullptr && fin_arr == nullptr) {
+		*fin_mapa = new int[arr_tam];
+		inicio_arr = *fin_mapa + (arr_tam / 2);
+		fin_arr = *fin_mapa + (arr_tam / 2);
+		*fin_arr = v;
+		elementos++;
+		arr_count++;
+	}
+	else if (fin_arr == *fin_mapa + arr_tam - 1 && fin_mapa != map + (map_tam - 1)) {
+		fin_mapa++;
+		*fin_mapa = new int[arr_tam];
+		fin_arr = *fin_mapa;
+		*fin_arr = v;
+		elementos++;
+		arr_count++;
+	}
+	else if (fin_arr == *fin_mapa + arr_tam - 1 && fin_mapa == map + (map_tam - 1)) {
+		ExpandOrColapse(map_tam * 2);
+		fin_mapa++;
+		*fin_mapa = new int[arr_tam];
+		fin_arr = *fin_mapa;
+		*fin_arr = v;
+		elementos++;
+		arr_count++;
 	}
 	else {
-		fin_array++;
-		*fin_array = x;
-		elements++;
+		fin_arr++;
+		*fin_arr = v;
+		elementos++;
 	}
 }
 
-template <class T>
-void Deque<T>::push_front(T x) {
-	if (ini_array == nullptr && fin_array == nullptr) {
-		*fin_map = new T[arr_tam];
-		ini_array = *fin_map + (arr_tam / 2);
-		fin_array = *fin_map + (arr_tam / 2);
-		*ini_array = x;
-		elements++;
-		arrays++;
+void Deque::push_front(int v) {
+	if (inicio_arr == nullptr && fin_arr == nullptr) {
+		*inicio_mapa = new int[arr_tam];
+		inicio_arr = *inicio_mapa + (arr_tam / 2);
+		fin_arr = *inicio_mapa + (arr_tam / 2);
+		*inicio_arr = v;
+		elementos++;
+		arr_count++;
 	}
-	else if (ini_array == *ini_map) {
-		ini_map--;
-		*ini_map = new T[arr_tam];
-		ini_array = *ini_map + arr_tam - 1;
-		*ini_array = x;
-		elements++;
-		arrays++;
+	else if (inicio_arr == *inicio_mapa && inicio_mapa != map) {
+		inicio_mapa--;
+		*inicio_mapa = new int[arr_tam];
+		inicio_arr = *inicio_mapa + (arr_tam - 1);
+		*inicio_arr = v;
+		elementos++;
+		arr_count++;
+	}
+	else if (inicio_arr == *inicio_mapa && inicio_mapa == map) {
+		ExpandOrColapse(map_tam * 2);
+		inicio_mapa--;
+		*inicio_mapa = new int[arr_tam];
+		inicio_arr = *inicio_mapa + (arr_tam - 1);
+		*inicio_arr = v;
+		elementos++;
+		arr_count;
 	}
 	else {
-		ini_array--;
-		*ini_array = x;
-		elements++;
+		inicio_arr--;
+		*inicio_arr = v;
+		elementos++;
 	}
 }
 
-template <class T>
-void Deque<T>::pop_front() {
-	if (ini_array == nullptr && fin_array == nullptr && elements == 0) {
+
+void Deque::pop_back() {
+	if (inicio_arr == nullptr && fin_arr == nullptr) {
 		return;
 	}
-	else if (ini_array == fin_array && elements == 1 && ini_map == fin_map) {
-		ini_array = nullptr;
-		fin_array = nullptr;
-		T* temp = *ini_map;
-		elements--;
-		arrays--;
+	else if (elementos == 1 && arr_count == 1) {
+		int* temp = *fin_mapa;
+		fin_arr = nullptr;
+		inicio_arr = nullptr;
+		elementos--;
+		arr_count--;
 		delete temp;
 	}
-	else if (ini_array == *ini_map + arr_tam - 1) {
-		if (arrays == map_tam / 2) {
-			ExpandOrColapse(map_tam / 2);
-		}
-		T* temp = *ini_map;
-		ini_map++;
-		ini_array = *ini_map;
-		elements--;
-		arrays--;
+	else if (fin_arr == *fin_mapa && arr_count >= map_tam / 2) {
+		int* temp = *fin_mapa;
+		fin_mapa--;
+		fin_arr = *fin_mapa + (map_tam - 1);
+		elementos--;
+		arr_count--;
+		delete temp;
+	}
+	else if (fin_arr == *fin_mapa && arr_count == map_tam / 2) {
+		ExpandOrColapse(map_tam / 2);
+		int* temp = *fin_mapa;
+		fin_mapa--;
+		fin_arr = *fin_mapa + (map_tam - 1);
+		elementos--;
+		arr_count--;
 		delete temp;
 	}
 	else {
-		ini_array++;
-		elements--;
+		fin_arr--;
+		elementos--;
 	}
 }
 
-template <class T>
-void Deque<T>::pop_back() {
-	if (ini_array == nullptr && fin_array == nullptr && elements == 0) {
+void Deque::pop_front() {
+	if (inicio_arr == nullptr && fin_arr == nullptr) {
 		return;
 	}
-	else if (ini_array == fin_array && elements == 1 && ini_map == fin_map) {
-		ini_array = nullptr;
-		fin_array = nullptr;
-		T* temp = *ini_map;
-		elements--;
-		arrays--;
+	else if (inicio_arr == *inicio_mapa + (arr_tam - 1) && arr_count > map_tam / 2) {
+		int* temp = *inicio_mapa;
+		inicio_mapa++;
+		inicio_arr = *inicio_mapa;
+		elementos--;
+		arr_count--;
 		delete temp;
 	}
-	else if (fin_array == *fin_map) {
-		if (arrays == map_tam / 2) {
-			ExpandOrColapse(map_tam / 2);
-		}
-		T* temp = *fin_map;
-		fin_map--;
-		fin_array = *fin_map + (arr_tam - 1);
-		elements--;
-		arrays--;
+	else if (inicio_arr == *inicio_mapa + (arr_tam - 1) && arr_count == map_tam / 2) {
+		ExpandOrColapse(map_tam / 2);
+		int* temp = *inicio_mapa;
+		inicio_mapa++;
+		inicio_arr = *inicio_mapa;
+		elementos--;
+		arr_count--;
 		delete temp;
 	}
 	else {
-		fin_array--;
-		elements--;
+		inicio_arr++;
+		elementos--;
 	}
 }
 
-template <class T>
-void Deque<T>::print() {
-	T** temp_ini = ini_map;
-	T* ini_array_temp = ini_array;
-	while (temp_ini <= fin_map) {
+void Deque::print() {
+	int** temp_ini = inicio_mapa;
+	int* ini_array_temp = inicio_arr;
+	while (temp_ini <= fin_mapa) {
 		cout << "[ ";
 		while (ini_array_temp <= *temp_ini + arr_tam - 1) {
 			cout << *ini_array_temp << " ";
-			if (ini_array_temp == fin_array) {
+			if (ini_array_temp == fin_arr) {
 				break;
 			}
 			ini_array_temp++;
@@ -194,29 +195,72 @@ void Deque<T>::print() {
 	cout << endl;
 }
 
+int& Deque::operator[](int v) {
+	if (v >= elementos) {
+		int random = 0;
+		return random;
+	}
+	int espacios_vacios = inicio_arr - *inicio_mapa;
+	int pos_mapa = v / arr_tam;
+	int pos_arr = (v % arr_tam) + espacios_vacios;
+
+	int** m_pos = inicio_mapa + pos_mapa;
+	int* a_pos = *m_pos + pos_arr;
+	return *a_pos;
+}
+
+
 int main() {
-	Deque<int> d(5, 7);
-	for (int i = 0; i < 20; i++) {
-		d.push_back(i);
-	}
-	for (int i = 20; i < 40; i++) {
-		d.push_front(i);
-	}
+	Deque d(3, 5);
+	d.push_front(5);
+	d.push_back(6);
+	d.push_back(7);
+	d.push_back(8);
+	d.push_back(9);
+	d.push_back(10);
+	d.push_back(11);
+	d.push_back(12);
+	d.push_back(13);
+	d.push_back(14);
+	d.push_front(4);
+	d.push_front(3);
+	d.push_front(2);
+	d.push_front(1);
 	d.print();
 
-	for (int i = 0; i < 15; i++) {
-		d.pop_front();
-	}
-
-	for (int i = 0; i < 15; i++) {
-		d.pop_back();
-	}
+	d.pop_back();
+	d.print();
+	d.pop_back();
 	d.print();
 
-	int x, x1, x2, x3;
-	x = d[1];
-	x1 = d[9];
-	x2 = d[6];
-	x3 = d[0];
-	cout << x << " " << x1 << " " << x2 << x3 << endl;
+	d.pop_front();
+	d.print();
+	d.pop_front();
+	d.print();
+
+
+	Deque d2(5, 7);
+	d2.push_front(9);
+	d2.push_front(7);
+	d2.push_front(4);
+	d2.push_front(1);
+	d2.push_front(3);
+	d2.push_front(8);
+	d2.push_back(6);
+	d2.push_back(5);
+	d2.push_back(2);
+	d2.push_back(7);
+
+	d2.print();
+	int valor = d2[7];
+	int valor2, valor3, valor4;
+	valor2 = d2[1];
+	valor3 = d2[0];
+	valor4 = d2[8];
+	cout << valor << endl;
+	cout << valor2 << endl;
+	cout << valor3 << endl;
+	cout << valor4;
+
+
 }
