@@ -95,4 +95,11 @@ int main() {
 	m1.print();
 	m1.set(4, 2, 17);
 	m1.print();
+
+	cout << m1.get(0, 0) << endl;
+	cout << m1.get(0, 1) << endl;
+	cout << m1.get(1, 0) << endl;
+	cout << m1.get(2, 1) << endl;
+	cout << m1.get(3, 3) << endl;
+
 }
