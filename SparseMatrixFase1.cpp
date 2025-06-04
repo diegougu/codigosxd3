@@ -31,7 +31,7 @@ bool SparseMatrixFase1::find(node**& p, int x, int y) {
 }
 
 void SparseMatrixFase1::set(int x, int y, int v) {
-	if (x > ejex || y > ejey) {
+	if (x >= ejex || y >= ejey) {
 		return;
 	}
 
@@ -54,7 +54,7 @@ void SparseMatrixFase1::set(int x, int y, int v) {
 }
 
 int SparseMatrixFase1::get(int x, int y) {
-	if (x > ejex && y > ejey) {
+	if (x >= ejex || y >= ejey) {
 		return 0;
 	}
 	node** p;
