@@ -22,7 +22,7 @@ public:
 };
 
 void SparseMatrixFase0::set(int x, int y, int v) {
-	if (x > x1 || y > y1) {
+	if (x >= x1 || y >= y1) {
 		return;
 	}
 
@@ -33,7 +33,7 @@ void SparseMatrixFase0::set(int x, int y, int v) {
 }
 
 int SparseMatrixFase0::get(int x, int y) {
-	if (x > x1 || y > y1) {
+	if (x >= x1 || y >= y1) {
 		return 0;
 	}
 	int** posx = ejex + x;
